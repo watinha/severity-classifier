@@ -30,16 +30,15 @@ X = bugs0 + bugs1
 y = np.zeros(len(bugs0)).tolist() + np.ones(len(bugs1)).tolist()
 
 pipe = Pipeline([
-  ('extractor', TfidfVectorizer(stop_words='english')),
+  #('extractor', TfidfVectorizer(stop_words='english')),
+  ('extractor with selection', USES()),
   ('classifier', DecisionTreeClassifier())
 ])
 
-(USES(language='english')).fit(X, y)
-
-#skf = StratifiedKFold(n_splits=10, random_state=42)
-#results = cross_validate(pipe, X, y, cv=skf, scoring=('f1_macro', 'precision', 'recall', 'roc_auc'))
-#print(results)
-#print('F-Score: %f' % (results['test_f1_macro'].mean()))
-#print('Precision: %f' % (results['test_precision'].mean()))
-#print('Recall: %f' % (results['test_recall'].mean()))
-#print('ROC-AUC: %f' % (results['test_roc_auc'].mean()))
+skf = StratifiedKFold(n_splits=10, random_state=42)
+results = cross_validate(pipe, X, y, cv=skf, scoring=('f1_macro', 'precision', 'recall', 'roc_auc'))
+print(results)
+print('F-Score: %f' % (results['test_f1_macro'].mean()))
+print('Precision: %f' % (results['test_precision'].mean()))
+print('Recall: %f' % (results['test_recall'].mean()))
+print('ROC-AUC: %f' % (results['test_roc_auc'].mean()))
