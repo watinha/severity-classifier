@@ -101,3 +101,27 @@ class USES:
     return random.sample(features_subset, n)
 
 
+class USESPlus:
+
+  def _calculate_aff_score(self, severity0, severity1, all_words, map0, map1):
+    score = []
+
+    for word in all_words:
+      n_0 = len(severity0)
+      n_1 = len(severity1)
+      n_w = map0[word] + map1[word]
+      n_0_w = map0[word]
+      n_1_w = map1[word]
+
+      aff_0_w = n_0_w / n_w
+      aff_1_w = n_1_w / n_w
+
+      score.append({ 'word': word, 'score': (aff_0_w - aff_1_w) })
+
+    return sorted(score, key=lambda x: x['score'])
+
+
+  def _sample(self, features_subset, n, iteration):
+    return features_subset[-(iteration+1):]
+
+

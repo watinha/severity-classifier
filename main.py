@@ -5,7 +5,7 @@ from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeClassifier
 
-from feature_selection import FeatureSearch, USES
+from feature_selection import FeatureSearch, USES, USESPlus
 
 if (len(sys.argv) < 2):
   print('Pass the dataset folder parameter...')
@@ -31,7 +31,8 @@ y = np.zeros(len(bugs0)).tolist() + np.ones(len(bugs1)).tolist()
 
 pipe = Pipeline([
   #('extractor', TfidfVectorizer(stop_words='english')),
-  ('extractor with selection', FeatureSearch(strategy=USES())),
+  #('extractor with selection', FeatureSearch(strategy=USES())),
+  ('extractor with selection', FeatureSearch(strategy=USESPlus())),
   ('classifier', DecisionTreeClassifier())
 ])
 
