@@ -35,7 +35,7 @@ pipe = Pipeline([
   ('classifier', DecisionTreeClassifier())
 ])
 
-skf = StratifiedKFold(n_splits=10, random_state=42)
+skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
 results = cross_validate(pipe, X, y, cv=skf, scoring=('f1_macro', 'precision', 'recall', 'roc_auc'))
 print(results)
 print('F-Score: %f' % (results['test_f1_macro'].mean()))

@@ -19,7 +19,7 @@ class USES:
     self._random_state = random_state
 
 
-  def fit(self, X, y):
+  def _word_count (self, X, y):
     severity0 = []
     severity1 = []
     for i in range(len(y)):
@@ -48,6 +48,9 @@ class USES:
       except:
         map1[word] = 0
 
+    return (severity0, severity1, all_words, map0, map1)
+
+  def _calculate_aff_score(self, severity0, severity1, all_words, map0, map1):
     for word in all_words:
       n_0 = len(severity0)
       n_1 = len(severity1)
@@ -61,11 +64,19 @@ class USES:
       self._score.append({ 'word': word, 'score': (aff_0_w - aff_1_w) })
 
     self._score = sorted(self._score, key=lambda x: x['score'])
+
+  def _sample(self, features_subset, iteration):
+    return random.sample(features_subset, self._n)
+
+  def fit(self, X, y):
+    (severity0, severity1, all_words, map0, map1) = self._word_count(X, y)
+    self._calculate_aff_score(severity0, severity1, all_words, map0, map1)
+
     features_subset = list(map(lambda x: x['word'], self._score[:self._n] + self._score[-self._n:]))
 
     random.seed(self._random_state)
     for i in range(self._max_iteration):
-      features = random.sample(features_subset, self._n)
+      features = self._sample(features_subset, i)
       self._extractor.vocabulary = features
       X_new = self._extractor.fit_transform(X)
       self._classifier.fit(X_new, y)
