@@ -1,0 +1,5 @@
+{"description":"BOTÕES NO MOZILLA 2 3","steps_reproduce":"","expected_result":"","real_result":"","severity":"0","tester":"2","developer":"3"}
+{"description":"TESTES TESTES TESTE TETE","steps_reproduce":"","expected_result":"","real_result":"","severity":"1","tester":"2","developer":"3"}
+{"description":"BOTÕES NO FIREFOX ESTÃO ! _ * rt_tet ? . 12 DESALINHADOS","steps_reproduce":"","expected_result":"","real_result":"","severity":"0","tester":"2","developer":"3"}
+{"description":"TESTES TETE 2 3 4 seríamos","steps_reproduce":"","expected_result":"","real_result":"","severity":"1","tester":"2","developer":"3"}
+{"description":"TESS TETE 2 3 4 seríamos","steps_reproduce":"","expected_result":"","real_result":"","severity":"1","tester":"2","developer":"3"}
