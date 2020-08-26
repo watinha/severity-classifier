@@ -1,11 +1,11 @@
-import random
+import random, math
 
 from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
 from sklearn.tree import DecisionTreeClassifier
 
 class FeatureSearch:
 
-  def __init__(self, n=50, language='english', max_iteration=50,
+  def __init__(self, n=50, language='english', max_iteration=100,
                classifier=DecisionTreeClassifier(), extractor=TfidfVectorizer(),
                random_state=42, strategy=None):
     self._language = language
@@ -58,7 +58,7 @@ class FeatureSearch:
     features_subset = list(map(lambda x: x['word'], self._score[:self._n] + self._score[-self._n:]))
 
     random.seed(self._random_state)
-    for i in range(self._max_iteration):
+    for i in range(1, self._max_iteration + 1):
       features = self._strategy._sample(features_subset, self._n, i)
       self._extractor.vocabulary = features
       X_new = self._extractor.fit_transform(X)
@@ -92,7 +92,7 @@ class USES:
       aff_0_w = n_0_w / (n_0 + n_w - n_0_w)
       aff_1_w = n_1_w / (n_1 + n_w - n_1_w)
 
-      score.append({ 'word': word, 'score': (aff_0_w - aff_1_w) })
+      score.append({ 'word': word, 'score': (aff_1_w - aff_0_w) })
 
     return sorted(score, key=lambda x: x['score'])
 
@@ -107,8 +107,6 @@ class USESPlus:
     score = []
 
     for word in all_words:
-      n_0 = len(severity0)
-      n_1 = len(severity1)
       n_w = map0[word] + map1[word]
       n_0_w = map0[word]
       n_1_w = map1[word]
@@ -116,12 +114,14 @@ class USESPlus:
       aff_0_w = n_0_w / n_w
       aff_1_w = n_1_w / n_w
 
-      score.append({ 'word': word, 'score': (aff_0_w - aff_1_w) })
+      score.append({ 'word': word, 'score': (aff_1_w - aff_0_w) })
 
     return sorted(score, key=lambda x: x['score'])
 
 
   def _sample(self, features_subset, n, iteration):
-    return features_subset[-(iteration+1):]
+    last = int(math.ceil(iteration / 2.0))
+    start = iteration - last
+    return features_subset[:start] + features_subset[-last:]
 
 
