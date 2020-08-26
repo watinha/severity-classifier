@@ -29,23 +29,25 @@ class FeatureSearch:
       else:
         severity0.append(X[i])
 
-    vectorizer0 = CountVectorizer(stop_words=self._language)
-    count0 = vectorizer0.fit_transform([' '.join(severity0)])
-    vectorizer1 = CountVectorizer(stop_words=self._language)
-    count1 = vectorizer1.fit_transform([' '.join(severity1)])
+    vectorizer0 = CountVectorizer(stop_words=self._language, binary=True)
+    count0 = vectorizer0.fit_transform(severity0).toarray()
+    vectorizer1 = CountVectorizer(stop_words=self._language, binary=True)
+    count1 = vectorizer1.fit_transform(severity1).toarray()
     all_words = set(list(vectorizer0.vocabulary_.keys()) + list(vectorizer1.vocabulary_.keys()))
 
     map0 = {}
     map1 = {}
     for word in all_words:
       try:
-        map0[word] = count0.toarray()[0][vectorizer0.vocabulary_[word]]
+        bugs_with_word = list(map(lambda bug: bug[vectorizer0.vocabulary_[word]], count0))
+        map0[word] = sum(bugs_with_word)
       except:
         map0[word] = 0
 
     for word in all_words:
       try:
-        map1[word] = count1.toarray()[0][vectorizer1.vocabulary_[word]]
+        bugs_with_word = list(map(lambda bug: bug[vectorizer1.vocabulary_[word]], count1))
+        map1[word] = sum(bugs_with_word)
       except:
         map1[word] = 0
 
@@ -114,7 +116,7 @@ class USESPlus:
       aff_0_w = n_0_w / n_w
       aff_1_w = n_1_w / n_w
 
-      score.append({ 'word': word, 'score': (aff_1_w - aff_0_w) })
+      score.append({ 'word': word, 'score': abs(aff_1_w - aff_0_w) })
 
     return sorted(score, key=lambda x: x['score'])
 
