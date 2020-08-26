@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeClassifier
 
 from feature_selection import FeatureSearch, USES, USESPlus
+from nlp import TextFilter
 
 if (len(sys.argv) < 2):
   print('Pass the dataset folder parameter...')
@@ -26,7 +27,8 @@ severity1_path = './%s/class1.txt' % (sys.argv[1])
 bugs0 = load_json(severity0_path)
 bugs1 = load_json(severity1_path)
 
-X = bugs0 + bugs1
+f = TextFilter(language='english')
+X = f.transform(bugs0 + bugs1)
 y = np.zeros(len(bugs0)).tolist() + np.ones(len(bugs1)).tolist()
 
 pipe = Pipeline([
@@ -37,9 +39,9 @@ pipe = Pipeline([
 ])
 
 skf = StratifiedKFold(n_splits=10, random_state=42, shuffle=True)
-results = cross_validate(pipe, X, y, cv=skf, scoring=('f1_macro', 'precision', 'recall', 'roc_auc'))
+results = cross_validate(pipe, X, y, cv=skf, scoring=('f1', 'precision', 'recall', 'roc_auc'))
 print(results)
-print('F-Score: %f' % (results['test_f1_macro'].mean()))
+print('F-Score: %f' % (results['test_f1'].mean()))
 print('Precision: %f' % (results['test_precision'].mean()))
 print('Recall: %f' % (results['test_recall'].mean()))
 print('ROC-AUC: %f' % (results['test_roc_auc'].mean()))
